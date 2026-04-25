@@ -1,0 +1,29 @@
+# Copy this file to terraform.tfvars and fill in your values.
+# terraform.tfvars is excluded from version control via .gitignore.
+#
+# Alternatively, export values as environment variables:
+#   export TF_VAR_github_token="ghp_..."
+#   export TF_VAR_org_name="my-organization"
+
+# ---------------------------------------------------------------------------
+# Required
+# ---------------------------------------------------------------------------
+
+# GitHub Personal Access Token
+# Required scopes: repo, admin:org
+# Create at: https://github.com/settings/tokens
+github_token = "ghp_xxxxxxxxxxxxxxxxxxxx"
+
+# GitHub organization name
+org_name = "my-organization"
+
+# ---------------------------------------------------------------------------
+# Optional
+# ---------------------------------------------------------------------------
+
+# Restrict changes to a single repository (useful for testing).
+# Set to "" to process all discovered repositories.
+repo_filter = ""
+
+# Path to the YAML configuration file.
+# config_file = "config/repos.yaml"
