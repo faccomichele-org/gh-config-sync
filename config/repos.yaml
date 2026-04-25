@@ -1,0 +1,261 @@
+# =============================================================================
+# gh-config-sync — repository configuration
+# =============================================================================
+#
+# Format: YAML
+#
+# Structure
+# ─────────
+# defaults:        Settings applied to ALL repositories in the organization.
+#                  These can be overridden per-repository in the 'repositories'
+#                  section below.
+#
+# repositories:    Per-repository overrides and additional resources
+#                  (environments, rulesets).  Only repositories listed here
+#                  will have their core settings fully managed by Terraform.
+#                  All discovered repositories receive the label configuration.
+#
+# Label enforcement
+# ─────────────────
+# Labels are enforced for every discovered repository.  Any label NOT listed
+# in the effective configuration (defaults merged with per-repo overrides) will
+# be REMOVED from that repository on the next 'terraform apply'.
+#
+# Color values may be specified with or without a leading '#'.
+#
+# Reviewer IDs
+# ────────────
+# The 'reviewers.users' and 'reviewers.teams' fields in environments require
+# numeric GitHub IDs, not usernames / team slugs.  You can look them up with:
+#   curl -H "Authorization: Bearer <PAT>" \
+#        https://api.github.com/orgs/<org>/teams
+#   curl -H "Authorization: Bearer <PAT>" \
+#        https://api.github.com/users/<username>
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Global defaults
+# -----------------------------------------------------------------------------
+defaults:
+  # ── Repository features ────────────────────────────────────────────────────
+  has_issues:      true
+  has_discussions: false
+  has_projects:    false
+  has_wiki:        false
+  has_downloads:   false
+  is_template:     false
+
+  # ── Merge strategy ─────────────────────────────────────────────────────────
+  allow_merge_commit:     true
+  allow_squash_merge:     true
+  allow_rebase_merge:     false
+  allow_auto_merge:       false
+  delete_branch_on_merge: true
+  allow_update_branch:    true
+
+  # ── Security ───────────────────────────────────────────────────────────────
+  vulnerability_alerts: true
+
+  # ── Default labels ─────────────────────────────────────────────────────────
+  # These labels will be present on every repository.  Labels not in this list
+  # (and not in a per-repo 'labels' override) will be deleted by Terraform.
+  labels:
+    - name: "bug"
+      color: "d73a4a"
+      description: "Something isn't working"
+    - name: "enhancement"
+      color: "a2eeef"
+      description: "New feature or request"
+    - name: "documentation"
+      color: "0075ca"
+      description: "Improvements or additions to documentation"
+    - name: "good first issue"
+      color: "7057ff"
+      description: "Good for newcomers"
+    - name: "help wanted"
+      color: "008672"
+      description: "Extra attention is needed"
+    - name: "question"
+      color: "d876e3"
+      description: "Further information is requested"
+    - name: "wontfix"
+      color: "ffffff"
+      description: "This will not be worked on"
+    - name: "duplicate"
+      color: "cfd3d7"
+      description: "This issue or pull request already exists"
+    - name: "invalid"
+      color: "e4e669"
+      description: "This doesn't seem right"
+
+# -----------------------------------------------------------------------------
+# Per-repository configurations
+# -----------------------------------------------------------------------------
+# Each entry overrides/extends the defaults above.
+# Core settings (visibility, features, merge strategy) are only managed by
+# Terraform for repositories listed here.
+repositories:
+
+  # ── Example: public library / open-source project ─────────────────────────
+  - name: "example-public-repo"
+    description: "An example public repository"
+    visibility:  "public"
+    homepage_url: "https://example.com"
+    topics:
+      - "terraform"
+      - "github"
+      - "iac"
+
+    has_issues:      true
+    has_discussions: true
+    has_projects:    false
+    has_wiki:        false
+
+    allow_merge_commit:     false
+    allow_squash_merge:     true
+    allow_rebase_merge:     false
+    delete_branch_on_merge: true
+
+    vulnerability_alerts: true
+
+    # Repository-specific labels (replaces defaults entirely for this repo)
+    labels:
+      - name: "bug"
+        color: "d73a4a"
+        description: "Something isn't working"
+      - name: "enhancement"
+        color: "a2eeef"
+        description: "New feature or request"
+      - name: "documentation"
+        color: "0075ca"
+        description: "Improvements or additions to documentation"
+      - name: "release"
+        color: "0e8a16"
+        description: "Release related tasks"
+      - name: "breaking change"
+        color: "b60205"
+        description: "Introduces a breaking API change"
+
+    environments:
+      - name: "production"
+        wait_timer:          30
+        can_admins_bypass:   false
+        prevent_self_review: true
+        # Numeric GitHub user/team IDs required:
+        # reviewers:
+        #   users: [12345678]
+        #   teams: [87654321]
+        deployment_branch_policy:
+          protected_branches:     true
+          custom_branch_policies: false
+
+      - name: "staging"
+        wait_timer:        0
+        can_admins_bypass: true
+        deployment_branch_policy:
+          protected_branches:     false
+          custom_branch_policies: true
+
+    rulesets:
+      - name: "main-branch-protection"
+        target:      "branch"
+        enforcement: "active"
+        conditions:
+          ref_name:
+            include:
+              - "~DEFAULT_BRANCH"
+            exclude: []
+        rules:
+          deletion:               true
+          non_fast_forward:       true
+          required_linear_history: false
+          required_signatures:    false
+          pull_request:
+            required_approving_review_count:   1
+            dismiss_stale_reviews_on_push:     true
+            require_code_owner_review:         false
+            require_last_push_approval:        false
+            required_review_thread_resolution: true
+          required_status_checks:
+            strict_required_status_checks_policy: false
+            required_checks:
+              - context: "ci / build"
+              - context: "ci / test"
+
+      - name: "tag-immutability"
+        target:      "tag"
+        enforcement: "active"
+        conditions:
+          ref_name:
+            include:
+              - "~ALL"
+            exclude: []
+        rules:
+          deletion:        true
+          non_fast_forward: true
+          creation:        false
+
+  # ── Example: private internal service ─────────────────────────────────────
+  - name: "example-private-repo"
+    description: "An example private repository"
+    visibility:  "private"
+
+    has_issues:   true
+    has_wiki:     false
+    has_projects: false
+
+    allow_merge_commit:     false
+    allow_squash_merge:     true
+    delete_branch_on_merge: true
+
+    # Inherits default labels from the 'defaults' section above
+
+    environments:
+      - name: "production"
+        wait_timer:        0
+        can_admins_bypass: false
+        deployment_branch_policy:
+          protected_branches:     true
+          custom_branch_policies: false
+
+    rulesets:
+      - name: "default-branch-protection"
+        target:      "branch"
+        enforcement: "active"
+        conditions:
+          ref_name:
+            include:
+              - "~DEFAULT_BRANCH"
+            exclude: []
+        rules:
+          deletion:         true
+          non_fast_forward: true
+          pull_request:
+            required_approving_review_count:   1
+            dismiss_stale_reviews_on_push:     false
+            require_code_owner_review:         true
+            require_last_push_approval:        false
+            required_review_thread_resolution: true
+
+  # ── Example: template repository ──────────────────────────────────────────
+  - name: "example-template-repo"
+    description: "Starter template for new projects"
+    visibility:  "public"
+    is_template: true
+
+    has_issues:   false
+    has_wiki:     false
+    has_projects: false
+
+    allow_merge_commit:     true
+    allow_squash_merge:     true
+    allow_rebase_merge:     false
+    delete_branch_on_merge: true
+
+    topics:
+      - "template"
+
+    labels:
+      - name: "template"
+        color: "e99695"
+        description: "Template repository issue"
