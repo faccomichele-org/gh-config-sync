@@ -105,6 +105,8 @@ defaults:
       can_admins_bypass: false
       deployment_branch_policy:
         protected_branches:     true
+      reviewers:
+        teams: ["OrgAdmins"]
 
 # -----------------------------------------------------------------------------
 # Per-repository configurations
