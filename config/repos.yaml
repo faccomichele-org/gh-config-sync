@@ -138,8 +138,6 @@ defaults:
         copilot_code_review:
           review_on_push:             false
           review_draft_pull_requests: false
-        required_status_checks:
-          strict_required_status_checks_policy: true
 
 # -----------------------------------------------------------------------------
 # Per-repository configurations
