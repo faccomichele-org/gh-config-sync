@@ -1,10 +1,9 @@
 # ---------------------------------------------------------------------------
 # Automatic import of existing repositories
 # ---------------------------------------------------------------------------
-# On the first run Terraform will import every repository that is:
-#   - listed in the 'repositories' section of config/repos.yaml, AND
-#   - currently discovered in the organization.
-# On subsequent runs the import block is a no-op for already-managed resources.
+# On the first run Terraform will import every repository discovered in the
+# organization.  On subsequent runs the import block is a no-op for
+# already-managed resources.
 # Requires Terraform >= 1.7.0 (for_each support in import blocks).
 #
 # Import ID note: the GitHub provider is configured with `owner = var.org_name`
@@ -12,7 +11,7 @@
 # provider therefore expects just the repository name (not "org/repo") as the
 # import ID — consistent with the official provider documentation.
 import {
-  for_each = local.explicitly_configured
+  for_each = local.all_target_repos
   to       = github_repository.repos[each.key]
   id       = each.key
 }
@@ -20,11 +19,11 @@ import {
 # ---------------------------------------------------------------------------
 # Repository settings
 # ---------------------------------------------------------------------------
-# Only repositories explicitly listed in config/repos.yaml are managed here.
-# Discovered repositories that are NOT in the config keep their existing
-# settings; Terraform will only manage their labels (see labels.tf).
+# All discovered repositories are managed here.  Defaults from the 'defaults'
+# section of config/repos.yaml are applied to every repository; any repository
+# listed in the 'repositories' section receives those overrides on top.
 resource "github_repository" "repos" {
-  for_each = local.explicitly_configured
+  for_each = local.all_target_repos
 
   name         = each.key
   description  = lookup(each.value, "description", null)

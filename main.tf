@@ -62,19 +62,23 @@ locals {
     }
   ]...)
 
-  # Environments are only configured for explicitly listed repositories.
+  # Environments are configured for ALL target repositories.
+  # Default environments (defined in 'defaults.environments') apply to every
+  # discovered repository; per-repo entries override them entirely for that repo.
   # Key format: "<repo_name>/<environment_name>"
   all_environments = merge([
-    for repo_name, repo_cfg in local.explicitly_configured : {
+    for repo_name, repo_cfg in local.all_target_repos : {
       for env in lookup(repo_cfg, "environments", []) :
       "${repo_name}/${env.name}" => merge(env, { repo = repo_name })
     }
   ]...)
 
-  # Rulesets are only configured for explicitly listed repositories.
+  # Rulesets are configured for ALL target repositories.
+  # Default rulesets (defined in 'defaults.rulesets') apply to every discovered
+  # repository; per-repo entries override them entirely for that repo.
   # Key format: "<repo_name>/<ruleset_name>"
   all_rulesets = merge([
-    for repo_name, repo_cfg in local.explicitly_configured : {
+    for repo_name, repo_cfg in local.all_target_repos : {
       for rs in lookup(repo_cfg, "rulesets", []) :
       "${repo_name}/${rs.name}" => merge(rs, { repo = repo_name })
     }

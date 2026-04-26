@@ -7,13 +7,15 @@
 # Structure
 # ─────────
 # defaults:        Settings applied to ALL repositories in the organization.
-#                  These can be overridden per-repository in the 'repositories'
-#                  section below.
+#                  This includes core settings, labels, environments, and
+#                  rulesets.  Everything here is overridden per-repository in
+#                  the 'repositories' section below.
 #
-# repositories:    Per-repository overrides and additional resources
-#                  (environments, rulesets).  Only repositories listed here
-#                  will have their core settings fully managed by Terraform.
-#                  All discovered repositories receive the label configuration.
+# repositories:    Per-repository overrides and additional resources.
+#                  Any key present here replaces the corresponding default
+#                  entirely for that repository (including labels, environments,
+#                  and rulesets lists).  Repositories NOT listed here still
+#                  receive all defaults.
 #
 # Label enforcement
 # ─────────────────
@@ -22,6 +24,12 @@
 # be REMOVED from that repository on the next 'terraform apply'.
 #
 # Color values may be specified with or without a leading '#'.
+#
+# Environments & Rulesets
+# ───────────────────────
+# environments and rulesets defined under 'defaults' are applied to EVERY
+# discovered repository.  A per-repo 'environments' or 'rulesets' list
+# replaces the defaults entirely for that repository.
 #
 # Reviewer IDs
 # ────────────
@@ -88,9 +96,9 @@ defaults:
 # -----------------------------------------------------------------------------
 # Per-repository configurations
 # -----------------------------------------------------------------------------
-# Each entry overrides/extends the defaults above.
-# Core settings (visibility, features, merge strategy) are only managed by
-# Terraform for repositories listed here.
+# Each entry overrides/extends the defaults above for that specific repository.
+# Repositories NOT listed here still receive all defaults (core settings,
+# labels, environments, rulesets).
 repositories:
 
   # ── Example: public library / open-source project ─────────────────────────

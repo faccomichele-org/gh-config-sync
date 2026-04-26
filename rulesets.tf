@@ -1,8 +1,11 @@
 # ---------------------------------------------------------------------------
 # Repository ruleset management
 # ---------------------------------------------------------------------------
-# Rulesets are only configured for repositories explicitly listed in the
-# 'repositories' section of config/repos.yaml.
+# Rulesets are configured for ALL discovered repositories.
+# Default rulesets defined under 'defaults.rulesets' in config/repos.yaml
+# are applied to every repository automatically.
+# Per-repository 'rulesets' entries override the defaults entirely for that
+# specific repository.
 #
 # Supported targets: "branch" | "tag"
 # Supported enforcement levels: "active" | "evaluate" | "disabled"
