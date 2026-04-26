@@ -52,8 +52,8 @@ terraform init
 terraform plan
 ```
 
-On the **first run**, Terraform automatically imports any repository listed in the  
-`repositories` section of `config/repos.yaml` that already exists in the organization.
+On the **first run**, Terraform automatically imports every repository discovered  
+in the organization into Terraform state.
 
 ### 5. Apply changes
 
@@ -74,12 +74,12 @@ terraform apply -var="repo_filter=my-repo-name"
 
 ## Repository Management Model
 
-| Feature | In `repositories` section | Discovered (defaults only) |
-|---------|---------------------------|----------------------------|
-| Core settings (visibility, features, merge strategy) | ✅ Enforced | ❌ Not touched |
-| Labels | ✅ Enforced | ✅ Enforced (from `defaults.labels`) |
-| Environments | ✅ Enforced | ❌ Not touched |
-| Rulesets | ✅ Enforced | ❌ Not touched |
+| Feature | All discovered repos | Repos in `repositories` section |
+|---------|---------------------|----------------------------------|
+| Core settings (visibility, features, merge strategy) | ✅ Enforced (from `defaults`) | ✅ Enforced (per-repo overrides) |
+| Labels | ✅ Enforced (from `defaults.labels`) | ✅ Enforced (per-repo overrides) |
+| Environments | ✅ Enforced (from `defaults.environments`) | ✅ Enforced (per-repo overrides) |
+| Rulesets | ✅ Enforced (from `defaults.rulesets`) | ✅ Enforced (per-repo overrides) |
 
 ---
 
@@ -116,10 +116,13 @@ repositories:  # explicit per-repo configuration
 | `allow_update_branch` | bool | Show "Update branch" button |
 | `vulnerability_alerts` | bool | Enable Dependabot alerts |
 | `labels` | list | Default label set (see below) |
+| `environments` | list | Default environments applied to every repo (see below) |
+| `rulesets` | list | Default rulesets applied to every repo (see below) |
 
 ### `repositories[*]` — per-repo overrides
 
 Every key from `defaults` is available here and takes precedence.  
+For list fields (`labels`, `environments`, `rulesets`) the per-repo list **replaces** the defaults entirely for that repository.  
 Additional per-repo keys:
 
 | Key | Type | Description |
@@ -130,9 +133,9 @@ Additional per-repo keys:
 | `visibility` | string | `"public"` \| `"private"` \| `"internal"` |
 | `topics` | list(string) | Repository topics |
 | `archived` | bool | Archive the repository |
-| `labels` | list | Repo-specific labels (**replaces** defaults entirely) |
-| `environments` | list | Deployment environments (see below) |
-| `rulesets` | list | Branch/tag rulesets (see below) |
+| `labels` | list | Repo-specific labels (**replaces** `defaults.labels` entirely) |
+| `environments` | list | Repo-specific environments (**replaces** `defaults.environments` entirely) |
+| `rulesets` | list | Repo-specific rulesets (**replaces** `defaults.rulesets` entirely) |
 
 ### Labels
 

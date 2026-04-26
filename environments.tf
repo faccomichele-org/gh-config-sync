@@ -1,8 +1,11 @@
 # ---------------------------------------------------------------------------
 # Environment management
 # ---------------------------------------------------------------------------
-# Environments are only configured for repositories explicitly listed in the
-# 'repositories' section of config/repos.yaml.
+# Environments are configured for ALL discovered repositories.
+# Default environments defined under 'defaults.environments' in
+# config/repos.yaml are applied to every repository automatically.
+# Per-repository 'environments' entries override the defaults entirely for
+# that specific repository.
 #
 # Note: the 'reviewers.users' and 'reviewers.teams' fields accept numeric IDs,
 # not usernames/team slugs.  Retrieve them via the GitHub API or use the
