@@ -22,7 +22,10 @@ resource "github_repository_environment" "environments" {
   dynamic "reviewers" {
     for_each = lookup(each.value, "reviewers", null) != null ? [each.value.reviewers] : []
     content {
-      users = lookup(reviewers.value, "users", [])
+      users = concat(
+        lookup(reviewers.value, "users", []),
+        lookup(reviewers.value, "current", false) ? [data.github_user.current.id] : []
+      )
       teams = lookup(reviewers.value, "teams", [])
     }
   }

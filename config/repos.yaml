@@ -106,7 +106,7 @@ defaults:
       deployment_branch_policy:
         protected_branches:     true
       reviewers:
-        teams: ["OrgAdmins"]
+        current: true
 
 # -----------------------------------------------------------------------------
 # Per-repository configurations
