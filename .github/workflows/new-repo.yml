@@ -7,7 +7,7 @@ on:
 
 permissions:
   contents: read
-  labels: write
+  issues: write
       
 concurrency:
   group: unique
