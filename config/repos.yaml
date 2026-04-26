@@ -121,7 +121,7 @@ defaults:
           exclude: []
       rules:
         deletion:                 true
-        update:                   true
+        update:                   false
         non_fast_forward:         true
         required_linear_history:  false
         required_signatures:      false
@@ -137,9 +137,6 @@ defaults:
           alerts_threshold: "errors"
           security_alerts_threshold: "high_or_higher"
           tool: "CodeQL"
-        copilot_code_review:
-          review_on_push:             false
-          review_draft_pull_requests: false
 
 # -----------------------------------------------------------------------------
 # Per-repository configurations
