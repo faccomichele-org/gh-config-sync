@@ -116,6 +116,28 @@ resource "github_repository_ruleset" "rulesets" {
         require_last_push_approval        = lookup(pull_request.value, "require_last_push_approval", false)
         required_approving_review_count   = lookup(pull_request.value, "required_approving_review_count", 0)
         required_review_thread_resolution = lookup(pull_request.value, "required_review_thread_resolution", false)
+        allowed_merge_methods             = lookup(pull_request.value, "allowed_merge_methods", ["merge", "squash", "rebase"])
+      }
+    }
+
+    # Required code scanning
+    dynamic "required_code_scanning" {
+      for_each = try(each.value.rules.required_code_scanning, null) != null ? [each.value.rules.required_code_scanning] : []
+      content {
+        required_code_scanning_tool {
+          alerts_threshold          = lookup(required_code_scanning.value, "alerts_threshold", "errors")
+          security_alerts_threshold = lookup(required_code_scanning.value, "security_alerts_threshold", "high_or_higher")
+          tool                      = lookup(required_code_scanning.value, "tool", "CodeQL")
+        }
+      }
+    }
+
+    # Required Copilot code review
+    dynamic "copilot_code_review" {
+      for_each = try(each.value.rules.copilot_code_review, null) != null ? [each.value.rules.copilot_code_review] : []
+      content {
+        review_on_push              = lookup(copilot_code_review.value, "review_on_push", false)
+        review_draft_pull_requests  = lookup(copilot_code_review.value, "review_draft_pull_requests", false)
       }
     }
 
