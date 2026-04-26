@@ -97,13 +97,9 @@ defaults:
     - name: "dev"
       wait_timer:        0
       can_admins_bypass: true
-      deployment_branch_policy:
-        protected_branches:     false
     - name: "stg"
       wait_timer:        180
       can_admins_bypass: true
-      deployment_branch_policy:
-        protected_branches:     false
     - name: "production"
       # wait_timer:        0
       can_admins_bypass: false
