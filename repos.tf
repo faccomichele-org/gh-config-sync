@@ -37,7 +37,6 @@ resource "github_repository" "repos" {
   has_discussions = lookup(each.value, "has_discussions", null)
   has_projects    = lookup(each.value, "has_projects", null)
   has_wiki        = lookup(each.value, "has_wiki", null)
-  has_downloads   = lookup(each.value, "has_downloads", null)
   is_template     = lookup(each.value, "is_template", null)
 
   # Merge strategy
