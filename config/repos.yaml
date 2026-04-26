@@ -93,6 +93,23 @@ defaults:
       color: "e4e669"
       description: "This doesn't seem right"
 
+  environments:
+    - name: "dev"
+      wait_timer:        0
+      can_admins_bypass: true
+      deployment_branch_policy:
+        protected_branches:     false
+    - name: "stg"
+      wait_timer:        180
+      can_admins_bypass: true
+      deployment_branch_policy:
+        protected_branches:     false
+    - name: "production"
+      # wait_timer:        0
+      can_admins_bypass: false
+      deployment_branch_policy:
+        protected_branches:     true
+
 # -----------------------------------------------------------------------------
 # Per-repository configurations
 # -----------------------------------------------------------------------------
@@ -116,10 +133,12 @@ repositories:
     has_projects:    false
     has_wiki:        false
 
-    allow_merge_commit:     false
-    allow_squash_merge:     true
-    allow_rebase_merge:     false
-    delete_branch_on_merge: true
+    allow_merge_commit:           false
+    allow_squash_merge:           true
+    squash_merge_commit_title:    "PR_TITLE"
+    squash_merge_commit_message:  "PR_BODY"
+    allow_rebase_merge:           false
+    delete_branch_on_merge:       true
 
     vulnerability_alerts: true
 
