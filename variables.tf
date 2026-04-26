@@ -1,12 +1,12 @@
+variable "tags" {
+  description = "Map of tags to assign to resources"
+  type        = map(string)
+}
+
 variable "github_token" {
   description = "GitHub Personal Access Token used for authentication. Required scopes: repo, admin:org."
   type        = string
   sensitive   = true
-}
-
-variable "org_name" {
-  description = "Name of the GitHub organization to manage."
-  type        = string
 }
 
 variable "repo_filter" {

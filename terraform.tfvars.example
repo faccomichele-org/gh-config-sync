@@ -3,7 +3,6 @@
 #
 # Alternatively, export values as environment variables:
 #   export TF_VAR_github_token="ghp_..."
-#   export TF_VAR_org_name="my-organization"
 
 # ---------------------------------------------------------------------------
 # Required
@@ -13,9 +12,6 @@
 # Required scopes: repo, admin:org
 # Create at: https://github.com/settings/tokens
 github_token = "ghp_xxxxxxxxxxxxxxxxxxxx"
-
-# GitHub organization name
-org_name = "my-organization"
 
 # ---------------------------------------------------------------------------
 # Optional

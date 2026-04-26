@@ -1,0 +1,26 @@
+# This triggers on all merged PRs into main
+
+name: Main - Cleanup/Destroy
+
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  pull-requests: write
+  contents: read
+      
+concurrency:
+  group: pr-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  dev:
+    name: "[DEV]"
+    uses: faccomichele-org/gha-reusables/.github/workflows/terraform-run.yml@main
+    with:
+      environment: 'dev'
+      region: 'eu-central-1'
+      working-directory: '.'
+      action: 'destroy'
+    secrets: inherit

@@ -14,5 +14,5 @@ terraform {
 # so resource IDs only need the repository name (no "org/" prefix).
 provider "github" {
   token = var.github_token
-  owner = var.org_name
+  owner = local.organization
 }

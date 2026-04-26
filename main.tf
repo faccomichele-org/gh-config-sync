@@ -5,7 +5,7 @@
 # GitHub Search returns up to 1,000 results; for organizations with more repos
 # consider supplementing with additional targeted queries.
 data "github_repositories" "all" {
-  query            = "org:${var.org_name} archived:false"
+  query            = "org:${local.organization} archived:false"
   results_per_page = 100
 }
 
